@@ -1,59 +1,82 @@
 part of 'indicators.dart';
 
-class _TrianglePainter extends CustomPainter {
+class _MarkerPainter extends CustomPainter {
   final Color fillColor;
+  final Color borderColor;
+  final Color shadowColor;
   final double strokeWidth;
   final double elevation;
 
-  const _TrianglePainter({
+  const _MarkerPainter({
     required this.fillColor,
+    required this.borderColor,
+    required this.shadowColor,
     this.strokeWidth = 1,
     this.elevation = 0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(size.width / 2, 0)
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..lineTo(size.width / 2, 0);
+    final double width = size.width;
+    final double height = size.height;
 
-    final strokeColor = fillColor;
-    final fillPaint = Paint()..color = fillColor;
-    final strokePaint = Paint()
-      ..color = strokeColor
+    // Path para la forma de marcador
+    final Path path = Path()
+      ..moveTo(width / 2, height) // Punto inferior
+      ..quadraticBezierTo(width, height * 0.90, width / 2, 0) // Curva derecha hacia arriba
+      ..quadraticBezierTo(0, height * 0.90, width / 2, height); // Curva izquierda hacia arriba
+
+    // Pintura de relleno
+    final Paint fillPaint = Paint()..color = fillColor;
+
+    // Pintura del borde
+    final Paint strokePaint = Paint()
+      ..color = borderColor.withOpacity(0.8)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
-    canvas.drawShadow(path, Colors.black, elevation, true);
+    // Dibujar la sombra
+    canvas.drawShadow(path, shadowColor.withOpacity(0.8), elevation, true);
+
+    // Dibujar la forma del marcador
     canvas.drawPath(path, fillPaint);
     canvas.drawPath(path, strokePaint);
   }
 
   @override
-  bool shouldRepaint(_TrianglePainter oldDelegate) {
-    return fillColor != oldDelegate.fillColor ||
-        elevation != oldDelegate.elevation ||
-        strokeWidth != oldDelegate.strokeWidth;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    if (oldDelegate is _MarkerPainter) {
+      return fillColor != oldDelegate.fillColor ||
+          strokeWidth != oldDelegate.strokeWidth ||
+          elevation != oldDelegate.elevation;
+    }
+    return false;
   }
 }
 
-class _Triangle extends StatelessWidget {
+class _Marker extends StatelessWidget {
   final Color color;
+  final Color borderColor;
+  final Color shadowColor;
+
   final double elevation;
 
-  const _Triangle({
+  const _Marker({
     required this.color,
-    this.elevation = 0,
+    required this.borderColor,
+    required this.shadowColor,
+    this.elevation = 8,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _TrianglePainter(
+      //size: const Size(80, 120), // Tamaño del marcador
+      painter: _MarkerPainter(
         fillColor: color,
-        strokeWidth: 1,
+        borderColor: borderColor,
+        shadowColor: shadowColor,
+        strokeWidth: 2,
         elevation: elevation,
       ),
     );

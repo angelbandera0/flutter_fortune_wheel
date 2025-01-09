@@ -2,14 +2,17 @@ part of 'indicators.dart';
 
 class RectangleIndicator extends StatelessWidget {
   final double borderWidth;
-  final Color? borderColor;
+  final Color borderColor;
+  final Color shadowColor;
   final Color color;
 
   const RectangleIndicator({
     Key? key,
     this.borderWidth = 2,
-    this.borderColor,
+    this.borderColor = Colors.transparent,
+    this.shadowColor = Colors.transparent,
     this.color = Colors.transparent,
+
   }) : super(key: key);
 
   @override
@@ -38,8 +41,10 @@ class RectangleIndicator extends StatelessWidget {
             child: SizedBox(
               width: width / 2,
               height: height / 10,
-              child: _Triangle(
-                color: borderColor,
+              child: _Marker(
+                color: color,
+                    borderColor: borderColor,
+                shadowColor: shadowColor,
               ),
             ),
           ),
@@ -50,8 +55,10 @@ class RectangleIndicator extends StatelessWidget {
               child: SizedBox(
                 width: width / 2,
                 height: height / 10,
-                child: _Triangle(
-                  color: borderColor,
+                child: _Marker(
+                  color: color,
+                  borderColor: borderColor,
+                  shadowColor: shadowColor,
                 ),
               ),
             ),

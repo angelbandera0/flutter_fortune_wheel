@@ -103,6 +103,7 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
   /// {@macro flutter_fortune_wheel.FortuneWidget.items}
   final List<FortuneItem> items;
 
+  final Color borderColor;
   /// {@macro flutter_fortune_wheel.FortuneWidget.selected}
   final Stream<int> selected;
 
@@ -179,6 +180,7 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
     this.hapticImpact = HapticImpact.none,
     PanPhysics? physics,
     this.onFling,
+    this.borderColor = Colors.transparent,
     this.onFocusItemChanged,
   })  : physics = physics ?? CircularPanPhysics(),
         assert(items.length > 1),
@@ -255,7 +257,14 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
 
     final lastVibratedAngle = useRef<double>(0);
 
-    return PanAwareBuilder(
+    return Container(
+        padding: EdgeInsets.all(0.0),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(color: borderColor, width: 5),
+        ),
+        child: PanAwareBuilder(
       behavior: HitTestBehavior.translucent,
       physics: physics,
       onFling: onFling,
@@ -337,7 +346,7 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
           ],
         );
       },
-    );
+    ));
   }
 
   /// * vibrate and animate arrow when cross border
